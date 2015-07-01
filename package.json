@@ -1,0 +1,24 @@
+{
+  "name": "stoker",
+  "version": "1.0.0",
+  "description": "web app where users can loging, chat betwen our ,and manager a stock of producst",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wolftrax5/React-Rethink.git"
+  },
+  "keywords": [
+    "reactjs",
+    "rethinkdb",
+    "webapp"
+  ],
+  "author": "Alejandro Medina Robles",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wolftrax5/React-Rethink/issues"
+  },
+  "homepage": "https://github.com/wolftrax5/React-Rethink#readme"
+}
