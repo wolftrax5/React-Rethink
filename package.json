@@ -4,6 +4,8 @@
   "description": "web app where users can loging, chat betwen our ,and manager a stock of producst",
   "main": "index.js",
   "scripts": {
+    "build": "browserify app.js > public/app.js -t babelify",
+    "start": "babel-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +22,16 @@
   "bugs": {
     "url": "https://github.com/wolftrax5/React-Rethink/issues"
   },
-  "homepage": "https://github.com/wolftrax5/React-Rethink#readme"
+  "homepage": "https://github.com/wolftrax5/React-Rethink#readme",
+  "dependencies": {
+    "babel": "^5.6.14",
+    "babelify": "^6.1.2",
+    "body-parser": "^1.13.1",
+    "browserify": "^10.2.4",
+    "express": "^4.13.0",
+    "react": "^0.13.3",
+    "rethinkdb": "^2.0.2",
+    "socket.io": "^1.3.5",
+    "socket.io-client": "^1.3.5"
+  }
 }
