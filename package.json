@@ -4,7 +4,7 @@
   "description": "web app where users can loging, chat betwen our ,and manager a stock of producst",
   "main": "index.js",
   "scripts": {
-    "build": "browserify app.js > public/app.js -t babelify",
+    "build": "browserify src/app.js > public/app.js -t babelify",
     "start": "babel-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
