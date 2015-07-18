@@ -16,36 +16,33 @@ const port = config.express.port;
 const app = express();
 const server = http.Server(app);
 const io = engine.listen(server);
+/* Funcion para comprabar coneccion */
+var IsConected = () => r.connect(config.rethinkdb)
+.then(function(conn) {
+    console.log(conn);
+})
+.error(function(error){
+    console.log(error.message);
+});
+
 /*+++++++++++++++Metodo para Iniciar Servidor de Archivos estaticos+++++++++++++++++++++*/
 var startServer = ()=> {server.listen(port)}
 
 /*+++++++++++++++Metodo para Iniciarl RethinkDB +++++++++++++++++++++*/
 var initializeRTBD = (conn) => {
-  r.table(config.rethinkdb.table).index('createdAt').run(conn)
-    .then((result) => {
-      startServer();
-      conn.close()
-        .then( () =>{
-          console.log("RethinkDB connection closed");
-        })
-    })
-     .error((error)=> {
-      console.log("The table doesn't exist.");
-      console.log("Initializing table: "+config.rethinkdb.table);
+  r.table(config.rethinkdb.table).indexWait('createdAt').run(conn)
+   .then(
+      startServer()
+    )
+    .error( (error) => {
       r.tableCreate(config.rethinkdb.table).run(conn)
-        .finally( ()=> {
-          console.log("Initializing index: "+config.rethinkdb.tableIndex);
+       .finally(() => {
           r.table(config.rethinkdb.table).indexCreate(config.rethinkdb.tableIndex).run(conn)
-            .finally(() => {
-              console.log("DB Initialized");
-              conn.closed()
-                .then(() => {
-                  console.log("RethinkDB connection closed");
-                });
-                startServer();
-            })
-        })
-     })
+           .finally(
+              startServer()
+            );
+       }); 
+    });
 };
 /*+++++++++++++++Metodo para Conectar a la BD de RethinkDB +++++++++++++++++++++*/
 r.connect(config.rethinkdb)
@@ -53,7 +50,7 @@ r.connect(config.rethinkdb)
     r.dbList().run(conn)
       .then((dbList) => {
         if(dbList.indexOf(config.rethinkdb.db) > -1){
-          //initializeRTBD(conn);
+          initializeRTBD(conn);
         } else {
             console.log("The DB doesn't exist.");
             console.log("Initializing DB "+config.rethinkdb.db);
@@ -76,7 +73,7 @@ var handleError = function(res) {
     }
 };
 
-
+IsConected();
 
 
 
