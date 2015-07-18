@@ -22251,6 +22251,8 @@ var AppLogin = (function (_React$Component) {
 
   _createClass(AppLogin, [{
     key: 'login',
+
+    // esto sera llamada cuando le demos click al boton de loging
     value: function login(e) {}
   }, {
     key: 'render',
@@ -22301,6 +22303,7 @@ var AppLogin = (function (_React$Component) {
 
 exports['default'] = AppLogin;
 
+// vamos a usar el mixin de `LinkedStateMixin` para tener dos caminos de databinding entre el componente y el html
 (0, _reactMixin2['default'])(AppLogin.prototype, _reactAddons2['default'].addons.LinkedStateMixin);
 module.exports = exports['default'];
 
