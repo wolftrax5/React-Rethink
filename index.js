@@ -18,14 +18,6 @@ const app = express();
 const server = http.Server(app);
 const io = engine.listen(server);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(multer());
-
-// app.route('/Users/list').get(list); //Mostrará todos los elementos
-// app.route('/Users/add').put(add); //Agregará un nuevo elemento.
-// app.route('/Users/empty').post(empty); //Eliminará todos los elementos.
-
 /* Funcion para comprabar coneccion */
 var IsConected = () => r.connect(config.rethinkdb)
     .then(function(conn) {
@@ -128,7 +120,7 @@ var empty = (request, res, next) => {
 }
 /***********************************************************************************/
 
-/*Emicion de los datos a los clientes*/
+/*************** Emicion de los datos a los clientes *************/
 io.on('connection',(socket) =>{
   this.socket = socket;
   var webSocket = this.socket;
@@ -147,7 +139,17 @@ io.on('connection',(socket) =>{
     })
    })
 })
-
+/******************************************************************************/
+// Data parsing
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(multer());
+//Define main routes
+app.route('/Users/list').get(() => list()); //Mostrará todos los elementos
+app.route('/Users/add').put(() => add()); //Agregará un nuevo elemento.
+app.route('/Users/empty').post(() => empty()); //Eliminará todos los elementos.
+// Static files server
+app.use(serverStatic('./public'));
 
 
 
