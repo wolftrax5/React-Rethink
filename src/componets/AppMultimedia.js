@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import AppLogin from './AppLogin'
-
+import SimpleFilterableList from './SimpleFilterableList'
 export default class AppMultimedia extends React.Component {
  	constructor(props){
  		super(props);
@@ -11,7 +11,7 @@ export default class AppMultimedia extends React.Component {
  	} 	
  	render(){
  		
- 			return <AppLogin />
+ 			return <SimpleFilterableList />
  		
  	}
  }

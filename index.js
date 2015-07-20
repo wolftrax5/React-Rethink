@@ -2,7 +2,6 @@
  * Module dependencies
  */
  //Servidor 
-import serverStatic from 'serve-static';
 import multer from 'multer';
 import express from 'express';
 import http from 'http'; // este ya viene cargado junto con Node asi que no hace falta instalarlo
@@ -15,7 +14,7 @@ import config from './config';
 
 const port = config.express.port;
 const app = express();
-const server = http.Server(app);
+const server = http.createServer(app);
 const io = engine.listen(server);
 
 /* Funcion para comprabar coneccion */
@@ -28,7 +27,10 @@ var IsConected = () => r.connect(config.rethinkdb)
   });
 
 /*+++++++++++++++Metodo para Iniciar Servidor de Archivos estaticos+++++++++++++++++++++*/
-var startServer = ()=> {server.listen(port)}
+var startServer = ()=> {server.listen(port, () => {
+  console.log(`Estamos en el puerto ${port}`);
+  })
+}
 
 /*+++++++++++++++Metodo para Iniciarl RethinkDB +++++++++++++++++++++*/
 var initializeRTBD = (conn) => {
@@ -122,11 +124,10 @@ var empty = (request, res, next) => {
 
 /*************** Emicion de los datos a los clientes *************/
 io.on('connection',(socket) =>{
-  this.socket = socket;
-  var webSocket = this.socket;
+  var webSocket = socket;
   //envía una notificación para verificar que la conexión fue establecida y lo transmite en checkConnection.
   webSocket.emit('checkConnection',{result: 'Web Socket OK'});
-  r.connect(config.rethinkdb.table)
+  r.connect(config.rethinkdb)
    .then((conn)=>{
     r.table(config.rethinkdb.table).changes({squash:1}).run(conn,(error,cursor)=> {
       cursor.on("data",(change) => {
@@ -149,11 +150,13 @@ app.route('/Users/list').get(() => list()); //Mostrará todos los elementos
 app.route('/Users/add').put(() => add()); //Agregará un nuevo elemento.
 app.route('/Users/empty').post(() => empty()); //Eliminará todos los elementos.
 // Static files server
-app.use(serverStatic('./public'));
+app.use(express.static(__dirname + '/public'));
 
+app.get('/',(req,res) => {
+  res.sendFile(__dirname + '/index.html');
+})
 
-
-
+IsConected();
 
 
 
