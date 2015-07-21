@@ -6,7 +6,7 @@ Objetivos:
 * Chat(Los usurarios conectados entre ellos )
 ### Requerimietos 
 Tienes que iniciar tu servidor de bace de datos 
-* #### [Rethinkdb](http://www.rethinkdb.com)
+ #### [Rethinkdb](http://www.rethinkdb.com)
 una ves instalado puedes correr el siguiente comando
 ```sh
 $ rethinkdb
@@ -39,8 +39,9 @@ $ npm start
 En cada cambio a los archivos de desarrollo, es necesario correr el comando antes de correr la aplicacion
 ```sh
 $ npm run buid  
-``
+```
 este es un comando descrito en el package.json, se esta usando: 
 * [Browserify](http://browserify.org/)
 * [Babelify](https://github.com/babel/babelify)
+
 ya que se planea desarrollar sobre [ECMAScript 6](https://babeljs.io/docs/learn-es2015/#ecmascript-6-features)
