@@ -38622,33 +38622,50 @@ var SimpleFilterableList = (function (_React$Component) {
     _inherits(SimpleFilterableList, _React$Component);
 
     _createClass(SimpleFilterableList, [{
+        key: 'downloadData',
+        value: function downloadData() {
+            var _this = this;
+
+            _jquery2['default'].ajax({
+                url: '/Users/list',
+                dataType: 'json',
+                success: (function (data) {
+                    _this.setState({ simpleList: data });
+                    // console.log('Suses Data:');
+                    // console.log(data);
+                }).bind(this),
+                error: (function (xhr, status, err) {
+                    console.log('Data error:');
+                    console.error(_this.props.url, status, err.toString());
+                }).bind(this)
+            });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this = this;
+            var _this2 = this;
 
             startSocket();
 
-            var downloadData = function downloadData() {
-                _jquery2['default'].ajax({
-                    url: '/Users/list',
-                    dataType: 'json',
-                    success: (function (data) {
-                        _this.setState({ simpleList: data });
-                    }).bind(_this),
-                    error: (function (xhr, status, err) {
-                        console.log('Data error:');
-                        console.error(_this.props.url, status, err.toString());
-                    }).bind(_this)
-                });
-            };
-
-            downloadData();
+            this.downloadData();
             socket.on('change', function (data) {
-                downloadData();
+                console.log('_________________');
+                console.log('Change');
+                console.log(data);
+                console.log('_________________');
+                _this2.downloadData();
             });
-            socket.on('connection', function (data) {
-                downloadData();
-                console.log('Socket connected');
+            socket.on('error', function (error) {
+                console.log('_________________');
+                console.log('Error');
+                console.log(error);
+                console.log('_________________');
+            });
+            socket.on('checkConnection', function (result) {
+                console.log('_________________');
+                console.log('Result');
+                console.log(result);
+                console.log('_________________');
             });
         }
     }, {
@@ -38667,7 +38684,7 @@ var SimpleFilterableList = (function (_React$Component) {
         value: function sendNewElement(key) {
             if (key.key == 'Enter') {
                 _jquery2['default'].ajax({
-                    url: '/api/add',
+                    url: '/Users/add',
                     type: 'post',
                     data: {
                         'row': document.getElementById('newElement').value
@@ -38778,7 +38795,7 @@ MODULE Dependencies
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-    value: true
+  value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -38796,38 +38813,42 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var SimpleListRow = (function (_React$Component) {
-    function SimpleListRow(props) {
-        _classCallCheck(this, SimpleListRow);
+  function SimpleListRow(props) {
+    _classCallCheck(this, SimpleListRow);
 
-        _get(Object.getPrototypeOf(SimpleListRow.prototype), 'constructor', this).call(this, props);
-    }
+    _get(Object.getPrototypeOf(SimpleListRow.prototype), 'constructor', this).call(this, props);
+  }
 
-    _inherits(SimpleListRow, _React$Component);
+  _inherits(SimpleListRow, _React$Component);
 
-    _createClass(SimpleListRow, [{
-        key: 'render',
-        value: function render() {
-            var rows = this.props.simpleList;
-            var userInput = this.props.userInput;
+  _createClass(SimpleListRow, [{
+    key: 'render',
+    value: function render() {
+      console.log('_________________');
+      console.log('simpleList rows props:');
+      console.log(this.props);
+
+      var rows = this.props.simpleList;
+      var userInput = this.props.userInput;
+
+      return _react2['default'].createElement(
+        'ol',
+        null,
+        rows.map(function (element) {
+          if (element.userName) {
+            console.log(element.userName);
             return _react2['default'].createElement(
-                'ol',
-                null,
-                rows.map(function (element) {
-                    if (element.row) {
-                        if (element.row.toLowerCase().search(userInput.toLowerCase()) > -1) {
-                            return _react2['default'].createElement(
-                                'li',
-                                null,
-                                element.row
-                            );
-                        }
-                    }
-                })
+              'li',
+              null,
+              element.userName
             );
-        }
-    }]);
+          }
+        })
+      );
+    }
+  }]);
 
-    return SimpleListRow;
+  return SimpleListRow;
 })(_react2['default'].Component);
 
 exports['default'] = SimpleListRow;

@@ -7,31 +7,44 @@ var startSocket = () => {
     socket = io('http://192.168.1.64:4000');
 }
 export default class SimpleFilterableList extends React.Component {
-	
-	componentDidMount(){
-		startSocket();
-		
-		var downloadData = () =>{
+
+	downloadData(){
 			$.ajax({
 				url: '/Users/list',
 				dataType: 'json',
 				success: (data) => {
                     this.setState({simpleList: data});
+                    // console.log('Suses Data:');
+                    // console.log(data);
                 }.bind(this),
                 error: (xhr, status, err) => {
                     console.log('Data error:');
                     console.error(this.props.url, status, err.toString())
                 }.bind(this)
 			});
-		};
-		
-		downloadData();
+		}
+	componentDidMount(){
+		startSocket();
+				
+		this.downloadData();
 		socket.on('change', (data) => {
-            downloadData();
+			console.log('_________________');
+			console.log("Change")
+			console.log(data);
+			console.log('_________________');
+            this.downloadData();
         })
-        socket.on('connection', (data) => {
-            downloadData();
-            console.log('Socket connected');
+        socket.on('error', (error) => {
+			console.log('_________________');
+			console.log("Error")
+			console.log(error);
+			console.log('_________________');
+        })
+        socket.on('checkConnection', (result) => {
+			console.log('_________________');
+			console.log("Result")
+			console.log(result);
+			console.log('_________________');
         })
 	}
 	constructor(props) {
@@ -51,7 +64,7 @@ export default class SimpleFilterableList extends React.Component {
     sendNewElement(key){
     	if (key.key == "Enter"){
         	$.ajax({
-        	    url  : "/api/add",
+        	    url  : "/Users/add",
             	type : "post",
             	data : {
             	    "row" : document.getElementById('newElement').value

@@ -82,20 +82,18 @@ usa el index createdAt para mostrarlos en el orden en que fueron creados*/
 var list = (request, res, next) => {
   r.connect(config.rethinkdb)
    .then((conn) => {
-      r.table(config.rethinkdb.table).orderBy({index: config.rethinkdb.tableIndex }).run(conn)
-       .then((data) => {
-          if (data._responses[0]){
-            var query = data._responses[0].r;
-            res.send(query);
-          }
-          conn.close()
-       })
-         . error(handleError(res))
+      r.table(config.rethinkdb.table).run(conn, function(err, cursor) {
+          if (err) throw err;
+          cursor.toArray(function(err, result) {
+          if (err) throw err;
+           res.send(result);
+          });
+      });
    });
 }
 /*inserta un nuevo elemento en la tabla, usa la función now() para guardar
- el momento en que fue creado el elemento en el key createdAt, 
- este dato se usa como index de la tabla*/
+el momento en que fue creado el elemento en el key createdAt, 
+este dato se usa como index de la tabla*/
 var add = (request, res, next) => {
   var element = request.body;
       element.createdAt = r.now();
@@ -146,9 +144,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 //Define main routes
-app.route('/Users/list').get(() => list()); //Mostrará todos los elementos
-app.route('/Users/add').put(() => add()); //Agregará un nuevo elemento.
-app.route('/Users/empty').post(() => empty()); //Eliminará todos los elementos.
+app.route('/Users/list').get(list); //Mostrará todos los elementos
+// app.route('/Users/add').put(add); //Agregará un nuevo elemento.
+// app.route('/Users/empty').post(empty); //Eliminará todos los elementos.
+
 // Static files server
 app.use(express.static(__dirname + '/public'));
 

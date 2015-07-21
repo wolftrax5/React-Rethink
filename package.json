@@ -29,6 +29,8 @@
     "body-parser": "^1.13.1",
     "browserify": "^10.2.4",
     "express": "^4.13.0",
+    "jquery": "^2.1.4",
+    "multer": "^0.1.8",
     "react": "^0.13.3",
     "react-mixin": "^1.5.0",
     "rethinkdb": "^2.0.2",
