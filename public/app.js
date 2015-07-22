@@ -38629,15 +38629,15 @@ var SimpleFilterableList = (function (_React$Component) {
             _jquery2['default'].ajax({
                 url: '/Users/list',
                 dataType: 'json',
-                success: (function (data) {
+                success: function success(data) {
                     _this.setState({ simpleList: data });
                     // console.log('Suses Data:');
                     // console.log(data);
-                }).bind(this),
-                error: (function (xhr, status, err) {
+                },
+                error: function error(xhr, status, err) {
                     console.log('Data error:');
                     console.error(_this.props.url, status, err.toString());
-                }).bind(this)
+                }
             });
         }
     }, {

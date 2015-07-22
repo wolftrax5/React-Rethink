@@ -16,11 +16,11 @@ export default class SimpleFilterableList extends React.Component {
                     this.setState({simpleList: data});
                     // console.log('Suses Data:');
                     // console.log(data);
-                }.bind(this),
+                },
                 error: (xhr, status, err) => {
                     console.log('Data error:');
                     console.error(this.props.url, status, err.toString())
-                }.bind(this)
+                }
 			});
 		}
 	componentDidMount(){
