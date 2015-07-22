@@ -7,27 +7,32 @@ export default class SimpleListRow extends React.Component {
 	constructor(props){
  		super(props);	
  	} 	
- 	render(){
+ 	render() {
  		console.log('_________________');
 		console.log('simpleList rows props:');
 		console.log(this.props)
 
  		var rows = this.props.simpleList;
-        var userInput = this.props.userInput;
+        var filterBy = this.props.filterBy;
 
        
         return (
-            <ol>
-           
-            {rows.map((element)=>{
+        
+        <ol>   
+            { rows.map((element)=>{
+                
          		if (element.userName){
-         		console.log(element.userName);
-         		return( <li>{element.userName}</li>);
-     	    	}
-     	    })
-     	}
-     	            
+                        if (element.userName.toLowerCase().search( filterBy.toLowerCase()) > -1){
+                            console.log("userInput found in simpleList : " +element.userName);
+                            return (
+                                <li>{element.userName}</li>
+                            );
+                        }
+                    }
+                  } )     
+ 	  	       }
             </ol>
- 		);
- 	}
+        );
+
+    }
 }

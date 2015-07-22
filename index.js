@@ -79,7 +79,7 @@ var handleError = (res) => {
 };
 /* Devuelve un array con todos los datos en esa tabla, 
 usa el index createdAt para mostrarlos en el orden en que fueron creados*/
-var list = (request, res, next) => {
+var getUsers = (request, res, next) => {
   r.connect(config.rethinkdb)
    .then((conn) => {
       r.table(config.rethinkdb.table).run(conn, function(err, cursor) {
@@ -144,8 +144,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer());
 //Define main routes
-app.route('/Users/list').get(list); //Mostrará todos los elementos
-// app.route('/Users/add').put(add); //Agregará un nuevo elemento.
+app.route('/Users').get(getUsers); //Mostrará todos los elementos
+app.route('/User').post(add); //Agregará un nuevo elemento.
 // app.route('/Users/empty').post(empty); //Eliminará todos los elementos.
 
 // Static files server
@@ -155,7 +155,6 @@ app.get('/',(req,res) => {
   res.sendFile(__dirname + '/index.html');
 })
 
-IsConected();
 
 
 

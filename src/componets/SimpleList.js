@@ -8,7 +8,7 @@ export default class SimpleList extends React.Component {
                <p><strong>Users</strong></p>
                <SimpleListRow
                    simpleList ={this.props.simpleList}
-                   userInput  ={this.props.userInput}
+                   filterBy  ={this.props.filterBy}
                    />
            	</span>
  			);

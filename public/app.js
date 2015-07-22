@@ -38606,7 +38606,7 @@ var _socketIoClient2 = _interopRequireDefault(_socketIoClient);
 
 var socket = null;
 var startSocket = function startSocket() {
-    socket = (0, _socketIoClient2['default'])('http://192.168.1.64:4000');
+    socket = (0, _socketIoClient2['default'])('http://localhost:4000');
 };
 
 var SimpleFilterableList = (function (_React$Component) {
@@ -38614,7 +38614,8 @@ var SimpleFilterableList = (function (_React$Component) {
         _classCallCheck(this, SimpleFilterableList);
 
         _get(Object.getPrototypeOf(SimpleFilterableList.prototype), 'constructor', this).call(this, props);
-        this.state = { userInput: '',
+        this.state = {
+            userInput: '',
             simpleList: [{ row: 'cargando ...' }]
         };
     }
@@ -38627,7 +38628,7 @@ var SimpleFilterableList = (function (_React$Component) {
             var _this = this;
 
             _jquery2['default'].ajax({
-                url: '/Users/list',
+                url: '/Users',
                 dataType: 'json',
                 success: function success(data) {
                     _this.setState({ simpleList: data });
@@ -38671,28 +38672,38 @@ var SimpleFilterableList = (function (_React$Component) {
     }, {
         key: 'updateUserInput',
 
-        //Mantiene actualizado el state
+        //encargará de enviar los nuevos elementos a RethinkDB usando nuestra API
+        // sendNewElement(key){
+        // 	if (key.key == "Enter"){
+        //     	$.ajax({
+        //     	    url  : "/Users/add",
+        //         	type : "post",
+        //         	data : {
+        //         	    "row" : document.getElementById('newElement').value
+        //         	}
+        //     	});
+        //     document.getElementById('newElement').value = '';
+        //     document.getElementById("userInput").focus();
+        // 	}
+        // }
         value: function updateUserInput(input) {
-            this.setState({
-                userInput: input.target.value
-            });
+
+            this.setState({ userInput: input.target.value });
+            console.log(this.userName);
         }
     }, {
-        key: 'sendNewElement',
-
-        //encargará de enviar los nuevos elementos a RethinkDB usando nuestra API
-        value: function sendNewElement(key) {
-            if (key.key == 'Enter') {
-                _jquery2['default'].ajax({
-                    url: '/Users/add',
-                    type: 'post',
-                    data: {
-                        'row': document.getElementById('newElement').value
-                    }
-                });
-                document.getElementById('newElement').value = '';
-                document.getElementById('userInput').focus();
-            }
+        key: 'addNewUser',
+        value: function addNewUser() {
+            _jquery2['default'].ajax({
+                url: '/User',
+                type: 'post',
+                data: {
+                    'userName': document.getElementById('newUserName').value,
+                    'passWord': document.getElementById('passWord').value
+                }
+            });
+            document.getElementById('passWord').value = '';
+            document.getElementById('newUserName').value = '';
         }
     }, {
         key: 'render',
@@ -38704,17 +38715,26 @@ var SimpleFilterableList = (function (_React$Component) {
                     id: 'userInput',
                     type: 'text',
                     placeholder: 'Filtrar...',
-                    onChange: this.updateUserInput }),
+                    onChange: this.updateUserInput
+                }),
                 _react2['default'].createElement(_SimpleList2['default'], {
                     simpleList: this.state.simpleList,
-                    userInput: this.state.userInput }),
+                    filterBy: this.state.userInput }),
                 _react2['default'].createElement('input', {
-                    id: 'newElement',
+                    id: 'newUserName',
+                    placeholder: 'User Name',
                     type: 'text',
-                    placeholder: '+',
-                    onKeyPress: this.sendNewElement,
-                    onClick: this.favToInput,
-                    className: 'fav' })
+                    className: 'fav' }),
+                _react2['default'].createElement('input', {
+                    id: 'passWord',
+                    placeholder: 'passWord',
+                    type: 'text',
+                    className: 'fav' }),
+                _react2['default'].createElement(
+                    'button',
+                    { id: 'addUser', type: 'submit', onClick: this.addNewUser, className: 'btn btn-default' },
+                    'Submit'
+                )
             );
         }
     }]);
@@ -38776,7 +38796,7 @@ var SimpleList = (function (_React$Component) {
         ),
         _react2['default'].createElement(_SimpleListRow2['default'], {
           simpleList: this.props.simpleList,
-          userInput: this.props.userInput
+          filterBy: this.props.filterBy
         })
       );
     }
@@ -38795,7 +38815,7 @@ MODULE Dependencies
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+    value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -38813,42 +38833,45 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var SimpleListRow = (function (_React$Component) {
-  function SimpleListRow(props) {
-    _classCallCheck(this, SimpleListRow);
+    function SimpleListRow(props) {
+        _classCallCheck(this, SimpleListRow);
 
-    _get(Object.getPrototypeOf(SimpleListRow.prototype), 'constructor', this).call(this, props);
-  }
-
-  _inherits(SimpleListRow, _React$Component);
-
-  _createClass(SimpleListRow, [{
-    key: 'render',
-    value: function render() {
-      console.log('_________________');
-      console.log('simpleList rows props:');
-      console.log(this.props);
-
-      var rows = this.props.simpleList;
-      var userInput = this.props.userInput;
-
-      return _react2['default'].createElement(
-        'ol',
-        null,
-        rows.map(function (element) {
-          if (element.userName) {
-            console.log(element.userName);
-            return _react2['default'].createElement(
-              'li',
-              null,
-              element.userName
-            );
-          }
-        })
-      );
+        _get(Object.getPrototypeOf(SimpleListRow.prototype), 'constructor', this).call(this, props);
     }
-  }]);
 
-  return SimpleListRow;
+    _inherits(SimpleListRow, _React$Component);
+
+    _createClass(SimpleListRow, [{
+        key: 'render',
+        value: function render() {
+            console.log('_________________');
+            console.log('simpleList rows props:');
+            console.log(this.props);
+
+            var rows = this.props.simpleList;
+            var filterBy = this.props.filterBy;
+
+            return _react2['default'].createElement(
+                'ol',
+                null,
+                rows.map(function (element) {
+
+                    if (element.userName) {
+                        if (element.userName.toLowerCase().search(filterBy.toLowerCase()) > -1) {
+                            console.log('userInput found in simpleList : ' + element.userName);
+                            return _react2['default'].createElement(
+                                'li',
+                                null,
+                                element.userName
+                            );
+                        }
+                    }
+                })
+            );
+        }
+    }]);
+
+    return SimpleListRow;
 })(_react2['default'].Component);
 
 exports['default'] = SimpleListRow;

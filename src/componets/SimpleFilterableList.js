@@ -4,13 +4,13 @@ import $ from 'jquery';
 import io from 'socket.io-client';
 var socket = null;
 var startSocket = () => {
-    socket = io('http://192.168.1.64:4000');
+    socket = io('http://localhost:4000');
 }
 export default class SimpleFilterableList extends React.Component {
 
 	downloadData(){
 			$.ajax({
-				url: '/Users/list',
+				url: '/Users',
 				dataType: 'json',
 				success: (data) => {
                     this.setState({simpleList: data});
@@ -49,51 +49,72 @@ export default class SimpleFilterableList extends React.Component {
 	}
 	constructor(props) {
     	super(props);
-        this.state ={userInput: "",
+        this.state ={
+            userInput : "",
         	simpleList : [ { row : 'cargando ...' } ]
         	}
         	
     	}
-    //Mantiene actualizado el state 
-    updateUserInput (input){
-    	this.setState({
-    		userInput : input.target.value
-    	})
-    }
+    
     //encargará de enviar los nuevos elementos a RethinkDB usando nuestra API
-    sendNewElement(key){
-    	if (key.key == "Enter"){
-        	$.ajax({
-        	    url  : "/Users/add",
-            	type : "post",
-            	data : {
-            	    "row" : document.getElementById('newElement').value
-            	}
-        	});
-        document.getElementById('newElement').value = '';
-        document.getElementById("userInput").focus();
-    	}
+    // sendNewElement(key){
+    // 	if (key.key == "Enter"){
+    //     	$.ajax({
+    //     	    url  : "/Users/add",
+    //         	type : "post",
+    //         	data : {
+    //         	    "row" : document.getElementById('newElement').value
+    //         	}
+    //     	});
+    //     document.getElementById('newElement').value = '';
+    //     document.getElementById("userInput").focus();
+    // 	}
+    // }
+    updateUserInput (input){
+
+        this.setState({userInput: input.target.value});
+    
+    }
+
+    addNewUser(){
+        $.ajax({
+             url  : "/User",
+             type : "post",
+             data : {
+                 "userName" : document.getElementById('newUserName').value ,
+                 "passWord" : document.getElementById('passWord').value
+             }
+         });
+        document.getElementById('passWord').value = "";
+        document.getElementById('newUserName').value = "";
     }
     render(){
     	return(
     		<div>
-    			<input
-                	id = 'userInput'
-                	type = 'text'
-                	placeholder = 'Filtrar...'
-                	onChange = {this.updateUserInput}>
-            	</input>
+                <input
+                    id          ='userInput'
+                    type        ='text' 
+                    placeholder ='Filtrar...'   
+                    onChange    ={this.updateUserInput}
+                    />
             	<SimpleList
                 	simpleList  = {this.state.simpleList}
-               		 userInput = {this.state.userInput}/>
+               		filterBy = {this.state.userInput}/>
+                
                 <input
-                	id = 'newElement'
-                	type = 'text'
-                	placeholder = '+'
-                	onKeyPress = {this.sendNewElement}
-                	onClick = {this.favToInput}
-                	className ='fav'>
-            	</input>
+                    id = 'newUserName'
+                    placeholder ='User Name'
+                    type = 'text'
+                    className ='fav'>
+                </input>
+                <input
+                    id = 'passWord' 
+                    placeholder ='passWord'
+                    type = 'text'
+                    className ='fav'>
+                </input>
+                <button id = 'addUser' type="submit"  onClick = {this.addNewUser} className="btn btn-default">Submit</button>
+
     		</div>
     		);
     }
